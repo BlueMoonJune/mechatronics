@@ -5,6 +5,11 @@ local function orient(front, back, up, close)
   local f = gps.locate(front, close)
   local b = gps.locate(back, close)
   local u = gps.locate(up, close)
+  parallel.waitForAll(
+	function () f = gps.locate(front, close) end,
+	function () b = gps.locate(back, close) end,
+	function () u = gps.locate(up, close) end
+  )
   local w = ((f+b)/2):round(0.001)
   local y = (u - w):normalize():round(0.001)
   local z = (f - w):normalize():round(0.001)

@@ -1,5 +1,7 @@
 local c = gps.CHANNEL_GPS
 
+local lib = {}
+
 local function trilaterate(A, B, C)
     local a2b = B.vPosition - A.vPosition
     local a2c = C.vPosition - A.vPosition
@@ -51,7 +53,14 @@ local function narrow(p1, p2, fix)
     return p2
 end
 
-local function locate(m, close)
+function lib.ping(m)
+  if type(m) == "string" then
+    m = peripheral.wrap(m)
+  end
+  m.transmit(c, c, "PING")
+end
+
+function lib.locate(m, close, noping)
   local name
   if type(m) == "string" then
     name = m
@@ -62,7 +71,9 @@ local function locate(m, close)
   _ = m.isOpen(c) or m.close(c)
   m.open(c)
 
-  m.transmit(c, c, "PING")
+  if not noping then
+	m.transmit(c, c, "PING")
+  end
   local resp = {}
   local i = 1
   while i <= 4 do
@@ -86,4 +97,4 @@ if peripheral.wrap(...) then
   end
 end
 
-return {locate = locate}
+return lib
