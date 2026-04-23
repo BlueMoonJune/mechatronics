@@ -1,3 +1,6 @@
+--[[
+wget run https://raw.githubusercontent.com/BlueMoonJune/mechatronics/refs/heads/master/install.lua
+]]
 fs.delete("matrix.lua")
 fs.delete("gpsx.lua")
 fs.delete("orient.lua")

@@ -19,9 +19,17 @@ local function orient(front, back, up, close)
   return(mat)
 end
 
+local function transform(vec, mat, w)
+  local vm = (matrix{{vec.x, vec.y, vec.z, w or 1}} * mat^'T')[1]
+  return vector.new(vm[1], vm[2], vm[3])
+end
+
 if peripheral.wrap(...) then
   local front, back, up = ...
   orient(front, back, up, true)
 end
 
-return orient
+return {
+	get = orient,
+	transform = transform
+}
