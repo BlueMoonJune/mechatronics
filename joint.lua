@@ -4,9 +4,11 @@ local rsc = peripheral.find("Create_RotationSpeedController")
 local targ = bearing.getTargetAngle()
 
 local mult
+local limit
 local suc, res = pcall(require, "jointConfig")
-if suc then
-	mult = res
+if suc and type(res) == "table" then
+	mult = res.sign
+	limit = res.limit
 else
 	print("unable to get joint config")
 	print(res)
@@ -15,10 +17,14 @@ else
 	os.sleep(1)
 	mult = bearing.getTargetAngle() - targ
 	mult = mult / math.abs(mult)
+	term.write("Max RPM: ")
+	limit = tonumber(read())
 	local conf = fs.open("jointConfig.lua", "w")
-	conf.write("return "..mult)
+	conf.write(([[return {
+		sign = %s,
+		limit = %s
+	}]]):format(mult, limit))
 	conf.close()
-	print("Successfully configured joint with sign of "..mult)
 end
 
 parallel.waitForAny(
