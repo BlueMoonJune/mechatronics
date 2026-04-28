@@ -1,0 +1,49 @@
+local bearing = peripheral.find("swivel_bearing")
+local rsc = peripheral.find("Create_RotationSpeedController")
+
+local targ = bearing.getTargetAngle()
+
+local mult
+local suc, res = pcall(require, "jointConfig")
+if suc then
+	mult = res
+else
+    rsc.setTargetSpeed(5)
+	os.sleep(1)
+	mult = bearing.getTargetAngle() - targ
+	mult = mult / math.abs(mult)
+	local conf = fs.open("jointConfig.lua", "w")
+	conf.write("return "..mult)
+	conf.close()
+	print("Successfully configured joint with sign of "..mult)
+end
+
+parallel.waitForAny(
+    function ()
+        while targ do
+            print("Current angle:", targ)
+            targ = tonumber(read())
+        end
+    end,
+    function ()
+        local found = false
+        for _, v in ipairs(peripheral.getNames()) do
+            local p = peripheral.wrap(v)
+            if p.isWireless and p.isWireless() then
+                rednet.open(v)
+                found = true
+                break
+            end
+        end
+        while found do
+            local id, message = rednet.receive("setJointAngle")
+            targ = message
+        end
+    end,
+    function ()
+        while true do
+            os.sleep(0.05)
+            rsc.setTargetSpeed((targ - bearing.getTargetAngle())*mult)
+        end
+    end
+)
