@@ -8,6 +8,9 @@ local suc, res = pcall(require, "jointConfig")
 if suc then
 	mult = res
 else
+	print("unable to get joint config")
+	print(res)
+	print("detecting joint sign")
     rsc.setTargetSpeed(5)
 	os.sleep(1)
 	mult = bearing.getTargetAngle() - targ
