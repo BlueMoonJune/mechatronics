@@ -5,10 +5,12 @@ local targ = bearing.getTargetAngle()
 
 local mult
 local limit
+local speedMult
 local suc, res = pcall(require, "jointConfig")
-if suc and type(res) == "table" then
+if suc and type(res) == "table" and res.sign and res.limit and res.mult then
 	mult = res.sign
 	limit = res.limit
+	speedMult = res.mult
 else
 	print("unable to get joint config")
 	print(res)
@@ -19,11 +21,14 @@ else
 	mult = mult / math.abs(mult)
 	term.write("Max RPM: ")
 	limit = tonumber(read())
+	term.write("Speed Multiplier: ")
+	speedMult = tonumber(read()) or 1
 	local conf = fs.open("jointConfig.lua", "w")
 	conf.write(([[return {
 		sign = %s,
-		limit = %s
-	}]]):format(mult, limit))
+		limit = %s,
+		mult = %s
+	}]]):format(mult, limit, speedMult))
 	conf.close()
 end
 
@@ -52,7 +57,7 @@ parallel.waitForAny(
     function ()
         while true do
             os.sleep(0.05)
-            rsc.setTargetSpeed((targ - bearing.getTargetAngle())*mult)
+            rsc.setTargetSpeed((targ - bearing.getTargetAngle())*mult*speedMult)
         end
     end
 )
