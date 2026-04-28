@@ -4,5 +4,6 @@ shell.run("wget run https://raw.githubusercontent.com/BlueMoonJune/mechatronics/
 ]]
 startup.close()
 
-shell.run("wget run https://raw.githubusercontent.com/BlueMoonJune/mechatronics/refs/heads/master/joint.lua")
+shell.run("wget https://raw.githubusercontent.com/BlueMoonJune/mechatronics/refs/heads/master/joint.lua")
+shell.run("joint")
 
