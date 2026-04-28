@@ -4,7 +4,7 @@ shell.run("wget run https://raw.githubusercontent.com/BlueMoonJune/mechatronics/
 ]]
 startup.close()
 
-fs.remove("joint.lua")
+fs.delete("joint.lua")
 shell.run("wget https://raw.githubusercontent.com/BlueMoonJune/mechatronics/refs/heads/master/joint.lua")
 shell.setDir("/")
 shell.run("joint")
