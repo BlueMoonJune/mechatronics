@@ -3,7 +3,7 @@ local pidMeta = {
 		update = function (self, err)
 			self.deriv, self.cur = (err - self.cur) / self.dt, err
 			self.int = self.int + err * self.dt
-			return self.getValue()
+			return self:getValue()
 		end,
 		getValue = function (self)
 			return self.cur * self.P + self.int * self.I + self.deriv * self.D
