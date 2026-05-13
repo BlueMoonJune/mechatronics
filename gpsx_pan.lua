@@ -15,16 +15,18 @@ function lib.locate(m)
   m.transmit(c, c, name)
   while true do
     local event, side, channel, replyChannel, message, distance = os.pullEvent("modem_message")
-	if side == m and channel == c and replyChannel == c and type(message) == "table" and message.id == name then
-		return message.pos
-	end
+    if side == name and channel == c and replyChannel == 0 and type(message) == "table" and message.id == name then
+      local v = message.pos
+      return vector.new(v.x, v.y, v.z)
+    end
   end
 end
 
 if peripheral.wrap(...) then
   for _, v in ipairs({...}) do
-    print(locate(v))
+    print(lib.locate(v))
   end
 end
 
 return lib
+

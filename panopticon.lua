@@ -58,6 +58,7 @@ local function trilaterate(A, B, C)
 end
 
 local function narrow(p1, p2, fix)
+    if not p2 then print(p1) p2 = p1 end
     local dist1 = math.abs((p1 - fix.vPosition):length() - fix.nDistance)
     local dist2 = math.abs((p2 - fix.vPosition):length() - fix.nDistance)
 
@@ -109,7 +110,7 @@ parallel.waitForAny(
         logDirty = false
         local logFile = fs.open("log.pan", "w")
         for id, pos in pairs(log) do
-          logFile.write(("%s {%g %g %g}"):format(id, pos.x, pos.y, pos.z))
+          logFile.write(('"%s" {%g %g %g}'):format(id, pos.x, pos.y, pos.z))
         end
         logFile.close()
       end
@@ -117,3 +118,4 @@ parallel.waitForAny(
     end
   end
 )
+
